@@ -31,11 +31,19 @@ def summarize(request):
 @csrf_exempt
 def quiz(request):
     quiz_output = None
+    error = None
     if request.method == 'POST':
         topic = request.POST.get('topic', '')
         num_questions = int(request.POST.get('num_questions', 5))
-        quiz_output = generate_quiz(topic, num_questions)
-    return render(request, 'quiz.html', {'quiz': quiz_output})
+        try:
+            def stream():
+                from ai_core.quiz_generator import generate_quiz_stream
+                for chunk in generate_quiz_stream(topic, num_questions):
+                    yield chunk
+            return StreamingHttpResponse(stream(), content_type='text/plain')
+        except Exception as e:
+            error = str(e)
+    return render(request, 'quiz.html', {'quiz': quiz_output, 'error': error})
 
 # Doubt clarification view
 @csrf_exempt
