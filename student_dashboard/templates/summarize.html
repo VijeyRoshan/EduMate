@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Summarize Text</h2>
+<form method="post">
+    {% csrf_token %}
+    <textarea name="text" rows="8" cols="60" placeholder="Paste your notes or text here..."></textarea><br>
+    <button type="submit">Summarize</button>
+</form>
+{% if summary %}
+    <h3>Summary:</h3>
+    <div class="result">{{ summary }}</div>
+{% endif %}
+{% endblock %}

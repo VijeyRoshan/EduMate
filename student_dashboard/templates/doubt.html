@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Ask a Doubt</h2>
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="question" placeholder="Type your question here" required><br>
+    <textarea name="context" rows="4" cols="60" placeholder="Optional: Add context or notes..."></textarea><br>
+    <button type="submit">Get Answer</button>
+</form>
+{% if answer %}
+    <h3>Answer:</h3>
+    <div class="result">{{ answer }}</div>
+{% endif %}
+{% endblock %}

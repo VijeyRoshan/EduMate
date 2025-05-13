@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EduMate</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>EduMate – AI-Powered Offline Learning</h1>
+        <nav>
+            <a href="/">Dashboard</a> |
+            <a href="/summarize/">Summarize</a> |
+            <a href="/quiz/">Quiz</a> |
+            <a href="/doubt/">Ask Doubt</a>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2025 EduMate</p>
+    </footer>
+</body>
+</html>
