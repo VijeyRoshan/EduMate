@@ -1,14 +1,32 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>Ask a Doubt</h2>
-<form method="post">
+<form id="doubt-form" method="post">
     {% csrf_token %}
     <input type="text" name="question" placeholder="Type your question here" required><br>
     <textarea name="context" rows="4" cols="60" placeholder="Optional: Add context or notes..."></textarea><br>
     <button type="submit">Get Answer</button>
 </form>
-{% if answer %}
-    <h3>Answer:</h3>
-    <div class="result">{{ answer }}</div>
-{% endif %}
+<div id="result" class="result"></div>
+{% if error %}<div class="result">Error: {{ error }}</div>{% endif %}
+<script>
+document.getElementById('doubt-form').onsubmit = async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const resultDiv = document.getElementById('result');
+    resultDiv.textContent = 'Loading...';
+    const response = await fetch('', {
+        method: 'POST',
+        body: new FormData(form)
+    });
+    const reader = response.body.getReader();
+    let text = '';
+    while(true) {
+        const {done, value} = await reader.read();
+        if(done) break;
+        text += new TextDecoder().decode(value);
+        resultDiv.textContent = text;
+    }
+};
+</script>
 {% endblock %}

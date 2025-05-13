@@ -23,3 +23,21 @@ def query_ollama(prompt: str) -> str:
         return data.get('response', '').strip()
     except Exception as e:
         return f"[Error communicating with Ollama: {e}]"
+
+def stream_ollama(prompt: str):
+    payload = {
+        "model": OLLAMA_MODEL,
+        "prompt": prompt,
+        "stream": True
+    }
+    with requests.post(OLLAMA_API_URL, json=payload, stream=True) as response:
+        response.raise_for_status()
+        for line in response.iter_lines():
+            if line:
+                try:
+                    data = json.loads(line.decode('utf-8'))
+                    # Only yield the 'response' field (the actual text chunk)
+                    if 'response' in data:
+                        yield data['response']
+                except Exception:
+                    continue

@@ -1,13 +1,31 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>Summarize Text</h2>
-<form method="post">
+<form id="summarize-form" method="post">
     {% csrf_token %}
     <textarea name="text" rows="8" cols="60" placeholder="Paste your notes or text here..."></textarea><br>
     <button type="submit">Summarize</button>
 </form>
-{% if summary %}
-    <h3>Summary:</h3>
-    <div class="result">{{ summary }}</div>
-{% endif %}
+<div id="result" class="result"></div>
+{% if error %}<div class="result">Error: {{ error }}</div>{% endif %}
+<script>
+document.getElementById('summarize-form').onsubmit = async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const resultDiv = document.getElementById('result');
+    resultDiv.textContent = 'Loading...';
+    const response = await fetch('', {
+        method: 'POST',
+        body: new FormData(form)
+    });
+    const reader = response.body.getReader();
+    let text = '';
+    while(true) {
+        const {done, value} = await reader.read();
+        if(done) break;
+        text += new TextDecoder().decode(value);
+        resultDiv.textContent = text;
+    }
+};
+</script>
 {% endblock %}
